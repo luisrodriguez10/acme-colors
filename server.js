@@ -18,7 +18,38 @@ app.get('/api/colors', async(req, res, next) =>{
     }
 })
 
+app.post('/api/colors', async(req, res, next) =>{
+    try {
+        res.status(201).send(await Color.create(req.body));
+    } catch (ex) {
+        next(ex)
+    }
+})
 
+app.put(`/api/colors/:id`, async(req, res, next) =>{
+    try {
+        const color = await Color.findByPk(req.params.id);
+        await color.update(req.body)
+        res.send(color)
+    } catch (ex) {
+        next(ex)
+    }
+})
+
+app.delete(`/api/colors/:id`, async(req, res, next) =>{
+    try {
+        const color = await Color.findByPk(req.params.id);
+        await color.destroy()
+        res.sendStatus(204)
+    } catch (ex) {
+        next(ex)
+    }
+})
+
+app.use((err, req, res, next) =>{
+    console.log(err);
+    res.status(500).send(err);
+})
 
 const init = async() =>{
     try {
